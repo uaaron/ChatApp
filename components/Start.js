@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { StyleSheet, View, Text, Button, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
 
 const image = require('../assets/background_image.png')
 
@@ -22,6 +22,7 @@ const Start = ({ navigation }) => {
             placeholderTextColor="#757083"
           />
           <Text style={styles.text1}>Choose Background Color</Text>
+          {/*various color buttons to choose from */}
           <View style={styles.colorButtonContainer}>
             <TouchableOpacity
               style={[styles.colorButton,
@@ -52,6 +53,7 @@ const Start = ({ navigation }) => {
             title="Start Chatting"
             onPress={() => navigation.navigate('Chat', { name: name, colorSelection: colorSelection })}
           />
+          {Platform.OS === "ios" ? <KeyboardAvoidingView behavior="padding" /> : null}
         </View>
       </ImageBackground>
     </View>
