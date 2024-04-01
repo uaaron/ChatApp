@@ -2,21 +2,36 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { collection, addDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
 
 // Chat component
-const Chat = ({ route, navigation }) => {
-  const { name } = route.params;
+const Chat = ({ route, navigation, db }) => {
+  const { name, background, id } = route.params;
   const { colorSelection } = route.params;
   const [messages, setMessages] = useState([]);
 
   //Effect to set username as title on screen
   useEffect(() => {
-    navigation.setOptions({ title: name });
-  }, [])
+    const q = query(collection(db, "messages"), where("uid", "==", id));
+    const unsubMessages = onSnapshot(q, (documentsSnapshot) => {
+      let newMessages = [];
+      documentsSnapshot.forEach(doc => {
+        newMessages.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: new Date(doc.data().createdAt.toMillis())
+        })
+      });
+      setMessages(newMessages);
+    });
+    return () => {
+      if (unsubMessages) unsubMessages();
+    }
+  })
 
   //Appends new messages to the array of previous messages
   const onSend = (newMessages) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
+    addDoc(collection(db, "messages"), newMessages[0])
   }
 
   //changes the color of speech bubbles
@@ -63,7 +78,8 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1
+          _id: id,
+          name
         }}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}

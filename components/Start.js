@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { StyleSheet, View, Text, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView, Alert } from 'react-native';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 const image = require('../assets/background_image.png')
 
@@ -7,6 +8,19 @@ const image = require('../assets/background_image.png')
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');
   const [colorSelection, handleColorSelection] = useState('')
+
+  const auth = getAuth();
+
+  const signInUser = () => {
+    signInAnonymously(auth)
+      .then(result => {
+        navigation.navigate("Chat", { name: name, background: background, id: result.user.uid });
+        Alert.alert("Signed in Successfully");
+      })
+      .catch((error) => {
+        Alert.alert("Unable to sign in, try again later.");
+      })
+  }
 
   return (
     <View style={styles.container}>
@@ -51,7 +65,7 @@ const Start = ({ navigation }) => {
           </View>
           <Button
             title="Start Chatting"
-            onPress={() => navigation.navigate('Chat', { name: name, colorSelection: colorSelection })}
+            onPress={signInUser}
           />
           {Platform.OS === "ios" ? <KeyboardAvoidingView behavior="padding" /> : null}
         </View>
