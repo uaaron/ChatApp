@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import { collection, addDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 
 // Chat component
 const Chat = ({ route, navigation, db }) => {
