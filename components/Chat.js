@@ -7,27 +7,27 @@ import { collection, addDoc, onSnapshot, orderBy, query, where } from 'firebase/
 // Chat component
 const Chat = ({ route, navigation, db }) => {
   const { name, background, id } = route.params;
-  const { colorSelection } = route.params;
   const [messages, setMessages] = useState([]);
 
   //Effect to set username as title on screen
   useEffect(() => {
-    const q = query(collection(db, "messages"), where("uid", "==", id));
-    const unsubMessages = onSnapshot(q, (documentsSnapshot) => {
+    navigation.setOptions({ title: name });
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    const unsubMessages = onSnapshot(q, (docs) => {
       let newMessages = [];
-      documentsSnapshot.forEach(doc => {
+      docs.forEach(doc => {
         newMessages.push({
           id: doc.id,
           ...doc.data(),
           createdAt: new Date(doc.data().createdAt.toMillis())
         })
-      });
+      })
       setMessages(newMessages);
-    });
+    })
     return () => {
       if (unsubMessages) unsubMessages();
     }
-  })
+  }, []);
 
   //Appends new messages to the array of previous messages
   const onSend = (newMessages) => {
@@ -79,7 +79,7 @@ const Chat = ({ route, navigation, db }) => {
         onSend={messages => onSend(messages)}
         user={{
           _id: id,
-          name
+          name: name
         }}
       />
       {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
