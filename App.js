@@ -43,7 +43,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Screen1"
+        initialRouteName="Start"
       >
         <Stack.Screen
           name="Start"
@@ -52,7 +52,7 @@ export default function App() {
         <Stack.Screen
           name="Chat"
         >
-          {props => <Chat
+          {(props) => <Chat
             db={db}
             isConnected={connectionStatus.isConnected}
             {...props}

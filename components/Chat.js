@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import { collection, addDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
@@ -54,25 +54,33 @@ const Chat = ({ route, navigation, db, isConnected }) => {
 
   //Appends new messages to the array of previous messages
   const onSend = (newMessages) => {
-    addDoc(collection(db, "messages"), newMessages[0])
+    addDoc(collection(db, "messages"), newMessages[0]);
   }
 
   //changes the color of speech bubbles
   const renderBubble = (props) => {
-    return <Bubble
-      {...props}
-      wrapperStyle={{
-        right: {
-          backgroundColor: "#000"
-        },
-        left: {
-          backgroundColor: "#FFF"
-        }
-      }}
-    />
-  }
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: "#000"
+          },
+          left: {
+            backgroundColor: "#FFF"
+          },
+        }}
+      />
+    );
+  };
+
+  const renderInputToolbar = (props) => {
+    if (isConnected) return <InputToolbar {...props} />;
+    else return null;
+  };
 
   //created initial system and regular message upon mount
+  /*
   useEffect(() => {
     setMessages([
       {
@@ -93,12 +101,14 @@ const Chat = ({ route, navigation, db, isConnected }) => {
       },
     ]);
   }, []);
+  */
 
   return (
     <View style={[styles.container, { backgroundColor: background }]}>
       <GiftedChat
         messages={messages}
         renderBubble={renderBubble}
+        renderInputToolbar={renderInputToolbar}
         onSend={messages => onSend(messages)}
         user={{
           _id: id,
