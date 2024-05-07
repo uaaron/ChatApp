@@ -5,7 +5,11 @@ import Chat from './components/Chat';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, disableNetwork, enableNetwork } from 'firebase/firestore';
+
+import { useNetInfo } from "@react-native-community/netinfo";
+import { useEffect } from "react";
+import { LogBox, Alert } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +22,18 @@ export default function App() {
     messagingSenderId: "978371469276",
     appId: "1:978371469276:web:b6971645f9b222cacc7919"
   };
+
+  // Define a new state that represents the network connectivity status
+  const connectionStatus = useNetInfo();
+
+  useEffect(() => {
+    if (connectionStatus.isConnected === false) {
+      Alert.alert("Connection Lost!");
+      disableNetwork(db);
+    } else if (connectionStatus.isConnected === true) {
+      enableNetwork(db);
+    }
+  }, [connectionStatus.isConnected]);
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -36,7 +52,11 @@ export default function App() {
         <Stack.Screen
           name="Chat"
         >
-          {props => <Chat db={db} {...props} />}
+          {props => <Chat
+            db={db}
+            isConnected={connectionStatus.isConnected}
+            {...props}
+          />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
