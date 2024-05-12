@@ -4,6 +4,8 @@ import { StyleSheet, View, Text, KeyboardAvoidingView, Platform } from 'react-na
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import { collection, addDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import MapView from 'react-native-maps';
+import CustomActions from './CustomActions'
 
 // Chat component
 const Chat = ({ route, navigation, db, isConnected }) => {
@@ -79,29 +81,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     else return null;
   };
 
-  //created initial system and regular message upon mount
-  /*
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      },
-      {
-        _id: 2,
-        text: 'You have entered the chat',
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
-  }, []);
-  */
+
 
   return (
     <View style={[styles.container, { backgroundColor: background }]}>
@@ -109,6 +89,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
+        renderActions={renderCustomActions}
         onSend={messages => onSend(messages)}
         user={{
           _id: id,
