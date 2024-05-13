@@ -23,8 +23,12 @@ const Chat = ({ route, navigation, db, isConnected, storage }) => {
       unsubMessages = null;
 
       const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+      // Subscribe to changes in the "messages" collection using onSnapshot.
+      // This function will be called whenever there are changes in the collection.
       unsubMessages = onSnapshot(q, (docs) => {
         let newMessages = [];
+        // Iterate through each document in the snapshot
         docs.forEach(doc => {
           newMessages.push({
             id: doc.id,

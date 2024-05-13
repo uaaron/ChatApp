@@ -15,6 +15,8 @@ import { LogBox, Alert } from "react-native";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  // The app's firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyB2KNpqNr1B6asB55y6jHg9tBJza9vo_uE",
     authDomain: "chatapp-806af.firebaseapp.com",

@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import * as Location from 'expo-location';
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Text, View, StyleSheet, Alert } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, id }) => {
 
+  //return a reference to Gifted Chat's ActionSheet
   const actionSheet = useActionSheet();
 
   const onActionPress = () => {
@@ -82,10 +83,11 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, id }) => 
     } else Alert.alert("Permissions haven't been granted.");
   }
 
+  // Function to pick an image from the device's media library
   const generateReference = (uri) => {
     const timeStamp = (new Date()).getTime();
     const imageName = uri.split("/")[uri.split("/").length - 1];
-    return `${userID}-${timeStamp}-${imageName}`;
+    return `${id}-${timeStamp}-${imageName}`;
   }
 
   return (
