@@ -8,7 +8,7 @@ import MapView from 'react-native-maps';
 import CustomActions from './CustomActions'
 
 // Chat component
-const Chat = ({ route, navigation, db, isConnected }) => {
+const Chat = ({ route, navigation, db, isConnected, storage }) => {
   const { name, background, id } = route.params;
   const [messages, setMessages] = useState([]);
 
@@ -77,7 +77,12 @@ const Chat = ({ route, navigation, db, isConnected }) => {
   };
 
   const renderCustomActions = (props) => {
-    return <CustomActions {...props} />;
+    return <CustomActions
+      storage={storage}
+      onSend={onSend}
+      id={id}
+      {...props}
+    />;
   };
 
   const renderInputToolbar = (props) => {
@@ -116,7 +121,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
         messages={messages}
         renderBubble={renderBubble}
         renderInputToolbar={renderInputToolbar}
-        renderCustomActions={renderCustomActions}
+        renderActions={renderCustomActions}
         renderCustomView={renderCustomView}
         onSend={messages => onSend(messages)}
         user={{

@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, disableNetwork, enableNetwork } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useEffect } from "react";
@@ -23,6 +24,7 @@ export default function App() {
     appId: "1:978371469276:web:b6971645f9b222cacc7919"
   };
 
+
   // Define a new state that represents the network connectivity status
   const connectionStatus = useNetInfo();
 
@@ -39,6 +41,8 @@ export default function App() {
   const app = initializeApp(firebaseConfig);
   // Initialize Cloud Firestore
   const db = getFirestore(app);
+  // Initialize firebase storage handler
+  const storage = getStorage(app)
 
   return (
     <NavigationContainer>
@@ -54,6 +58,7 @@ export default function App() {
         >
           {(props) => <Chat
             db={db}
+            storage={storage}
             isConnected={connectionStatus.isConnected}
             {...props}
           />}
